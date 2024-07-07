@@ -22,29 +22,27 @@ type DatabaseConfig struct {
 
 var instance *MySQLConnPool
 
-func getConnection(dbConfig *DatabaseConfig) *sql.DB {
-	log.Println("Creating a new database connection with config:")
-	PrettyPrint(dbConfig)
+func getConnection(config *DatabaseConfig) *sql.DB {
+	log.Println("Creating new database connection")
 
 	// Create a DSN (Data Source Name) string
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
-		dbConfig.Username, dbConfig.Password, dbConfig.Host, dbConfig.Port, dbConfig.DatabaseName)
+		config.Username, config.Password, config.Host, config.Port, config.DatabaseName)
 
 	// Open the database connection
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
-		log.Panicf("Failed to open a database connection: %v", err)
+		panic(fmt.Sprintf("Failed to open a database connection: %v", err))
 	}
 
 	// Set connection settings
-	db.SetMaxOpenConns(dbConfig.MaxConn)
+	db.SetMaxOpenConns(config.MaxConn)
 	db.SetMaxIdleConns(1)
 	db.SetConnMaxIdleTime(time.Minute * 10)
 	db.SetConnMaxLifetime(time.Minute * 60)
 
-	err = db.Ping()
-	if err != nil {
-		log.Panicf("Failed to ping the database: %v", err)
+	if err = db.Ping(); err != nil {
+		panic(fmt.Sprintf("Failed to ping the database: %v", err))
 	}
 
 	return db
@@ -52,21 +50,28 @@ func getConnection(dbConfig *DatabaseConfig) *sql.DB {
 
 func GetInstance(dbConfig *DatabaseConfig) *MySQLConnPool {
 	if instance == nil {
-		instance = &MySQLConnPool{}
-		instance.db = getConnection(dbConfig)
+		instance = &MySQLConnPool{
+			db: getConnection(dbConfig),
+		}
 	}
+
 	return instance
 }
 
-func InsertBatch(db *sql.DB, query string, params []interface{}) {
-	stmt, err := db.Prepare(query)
+func (pool *MySQLConnPool) Insert(query string, params []interface{}) {
+	stmt, err := pool.db.Prepare(query)
 	if err != nil {
-		log.Panicf("Batch statement %v", err)
+		panic(fmt.Sprintf("Batch statement %v", err))
 	}
-	defer stmt.Close()
+
+	defer func(stmt *sql.Stmt) {
+		if err := stmt.Close(); err != nil {
+			panic(err)
+		}
+	}(stmt)
 
 	_, err = stmt.Exec(params...)
 	if err != nil {
-		log.Panicf("Batch execution %v", err)
+		panic(fmt.Sprintf("Batch execution %v", err))
 	}
 }
