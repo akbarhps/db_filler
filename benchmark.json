@@ -1,0 +1,99 @@
+{
+  "database": {
+    "host": "localhost",
+    "port": "3306",
+    "username": "root",
+    "password": "root",
+    "name": "benchmark",
+    "max_conn": 300
+  },
+  "tables": [
+    {
+      "name": "roles",
+      "count": 5000,
+      "schema": {
+        "id": "ulid",
+        "name": "word,unique",
+        "description": "sentence"
+      }
+    },
+    {
+      "name": "users",
+      "count": 500000,
+      "schema": {
+        "id": "ulid",
+        "name": "name",
+        "email": "email,unique",
+        "password": "password",
+        "email_verified_at": "datetime"
+      }
+    },
+    {
+      "name": "user_roles",
+      "count": 500000,
+      "schema": {
+        "user_id": "users->id,unique",
+        "role_id": "roles->id"
+      }
+    },
+    {
+      "name": "faculties",
+      "count": 500,
+      "schema": {
+        "id": "ulid",
+        "name": "name",
+        "color": "color_hex",
+        "abbreviation": "word,unique"
+      }
+    },
+    {
+      "name": "departments",
+      "count": 5000,
+      "schema": {
+        "id": "ulid",
+        "faculty_id": "faculties->id",
+        "code": "word,unique",
+        "dikti_code": "word,unique",
+        "name": "company_name",
+        "level": "oneof: D3, D4, S1, S2, S3"
+      }
+    },
+    {
+      "name": "student_types",
+      "count": 5000,
+      "schema": {
+        "id": "ulid",
+        "code": "word,unique",
+        "name": "company_name",
+        "description": "sentence"
+      }
+    },
+    {
+      "name": "students",
+      "count": 500000,
+      "schema": {
+        "id": "ulid",
+        "student_type_id": "student_types->id",
+        "department_id": "departments->id",
+        "student_id": "users->id,unique",
+        "level": "oneof: D3, D4, S1, S2, S3",
+        "class_year": "year",
+        "register_date": "date"
+      }
+    },
+    {
+      "name": "student_bios",
+      "count": 500000,
+      "schema": {
+        "student_id": "students->id,unique",
+        "name": "name",
+        "birth_place": "city",
+        "religion": "oneof: Islam, Christian, Catholic, Hindu, Buddha, Konghucu",
+        "address": "address",
+        "phone_number": "phone_number",
+        "date_of_birth": "date",
+        "gender": "oneof: Male, Female"
+      }
+    }
+  ]
+}
