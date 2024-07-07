@@ -123,7 +123,7 @@ func PrettyPrint(data interface{}) {
 
 func main() {
 	if len(os.Args) == 1 {
-		panic("Can'table run program, no file provided")
+		panic("Can't run program, no file provided")
 	}
 
 	fileName := os.Args[1]
@@ -163,12 +163,12 @@ func main() {
 
 	go log.Println("Start filling all tables")
 	for _, table := range config.Tables {
-		log.Printf("Filling table %s with %d items", table.Name, table.Count)
+		log.Printf("Filling %s table with %d items", table.Name, table.Count)
 		totalCount += table.Count
 
 		tableTime := time.Now()
 		table.Fill(dbPool.db, cache)
-		log.Println("Database fill complete with duration ", time.Since(tableTime))
+		log.Printf("%s table fill complete with duration %v", table.Name, time.Since(tableTime))
 
 		cache.ResetUniqueIndexes()
 	}
