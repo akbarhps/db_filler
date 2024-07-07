@@ -13,8 +13,8 @@
       "count": 5000,
       "schema": {
         "id": "ulid",
-        "name": "word,unique",
-        "description": "sentence"
+        "name": "ulid",
+        "description": "lorem_sentence"
       }
     },
     {
@@ -22,10 +22,10 @@
       "count": 500000,
       "schema": {
         "id": "ulid",
-        "name": "name",
-        "email": "email,unique",
-        "password": "password",
-        "email_verified_at": "datetime"
+        "name": "person_name",
+        "email": "net_email,unique",
+        "password": "net_password",
+        "email_verified_at": "timestamp"
       }
     },
     {
@@ -41,9 +41,9 @@
       "count": 500,
       "schema": {
         "id": "ulid",
-        "name": "name",
+        "name": "person_name",
         "color": "color_hex",
-        "abbreviation": "word,unique"
+        "abbreviation": "ulid"
       }
     },
     {
@@ -52,8 +52,8 @@
       "schema": {
         "id": "ulid",
         "faculty_id": "faculties->id",
-        "code": "word,unique",
-        "dikti_code": "word,unique",
+        "code": "ulid",
+        "dikti_code": "departments->code,unique",
         "name": "company_name",
         "level": "oneof: D3, D4, S1, S2, S3"
       }
@@ -63,9 +63,9 @@
       "count": 5000,
       "schema": {
         "id": "ulid",
-        "code": "word,unique",
+        "code": "ulid",
         "name": "company_name",
-        "description": "sentence"
+        "description": "lorem_sentence"
       }
     },
     {
@@ -77,8 +77,8 @@
         "department_id": "departments->id",
         "student_id": "users->id,unique",
         "level": "oneof: D3, D4, S1, S2, S3",
-        "class_year": "year",
-        "register_date": "date"
+        "class_year": "time_year",
+        "register_date": "time_date"
       }
     },
     {
@@ -86,13 +86,13 @@
       "count": 500000,
       "schema": {
         "student_id": "students->id,unique",
-        "name": "name",
-        "birth_place": "city",
+        "name": "person_name",
+        "birth_place": "address_city",
         "religion": "oneof: Islam, Christian, Catholic, Hindu, Buddha, Konghucu",
         "address": "address",
         "phone_number": "phone_number",
-        "date_of_birth": "date",
-        "gender": "oneof: Male, Female"
+        "date_of_birth": "time_date",
+        "gender": "person_gender"
       }
     }
   ]
